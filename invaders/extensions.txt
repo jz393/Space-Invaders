@@ -1,0 +1,86 @@
+Extensions I added to A7 Project
+
+Author: Jane Zhang (jz393)
+Date: December 3, 2017
+
+***Sound Credits in #5
+
+1) Player's ability to pause game:
+        
+        The user can pause the game any time during the active session
+        by pressing the 'P' button on the keyboard. I did this by adding
+        a new state to the game STATE_PLAYER_PAUSED. From the player paused
+        screen, which displays its own unique message, the user can continue
+        on with the active session by pressing 'S'.
+
+
+2) Ability to level up with increasing difficulty (speed):
+        
+        After killing all the aliens in the current wave, the user has the
+        option to continue on the game at the next level by pressing 'S'. The
+        state changes from STATE_COMPLETE (user won) to STATE_NEWWAVE, and
+        creates a new wave all over again, with ship in original position
+        and all lives restored. In addition, the aliens move faster with each
+        level upgrade. ALIEN_SPEED is multiplied by the levels multiplier,
+        which is calculated by INCR_SPEED_LEVEL**(level-1). The current level
+        is stored as an attribute [_level] in the controller class.
+        
+        The player's level is displayed at the top of the active screen.
+
+        
+3) Keep track of total score:
+        
+        I assigned each alien a score (top aliens are worth more + each
+        different alien pic has its own unique score), by adding a new
+        attribute [_score] to the Alien class. Each time an Alien is hit,
+        the player's score increases by the Alien's score. To do this, I added
+        a [_score] attribute to both the controller and subcontroller class.
+        The controller [app] attribute _score is the player's original score
+        prior to the start of the current wave. The subcontroller [wave] attribute
+        _score is how much score the player has accumulated in the given wave
+        through killing aliens. After the player completes a wave, the wave score
+        is added to the cumulative app score, and then reset to 0.
+        
+        Total score displayed at the top of the active screen is the sum of the
+        wave and app scores. In addition, score is also displayed when the
+        game is over.
+        
+        
+4) Customized sounds and user adjustable settings:
+        
+        I added sounds to the game for various actions (alien steps, firing
+        bolts, crossing line, etc.). The user can turn sound off/on any time
+        by pressing 'X'. I did this by givng the controller class a _sound
+        attribute [bool] and reading keyboard input. Sound is off when false,
+        on when true. When the user presses 'X', the attribute immediately
+        switches to the opposite value. Additionally, I made it so that _sound
+        can only be switched every TIME_SOUND_SWITCH seconds, so if the user
+        holds down the 'X' button, sound won't instantaneously change.
+        
+        Sound off/on is displayed on the active screen.
+
+        
+5) Alternating musical notes sequence with each alien step
+        
+        I set up a sequence of 4 musical note wav files to be played in a
+        sequence with each alien step. The faster the aliens move, the faster
+        the music sequence is played. I did this by creating a tuple consisting of
+        the 4 music file names, and iterating through the tuple in a pattern. I
+        created a _steps attribute in the wave class (total number of alien steps)
+        and played each note based off the modulus of _steps and 4.
+
+        The sounds ('A.wav', 'B_flat.wav', 'B.wav', 'C.wav') were downloaded from:
+        [https://freesound.org/people/Carlos_Vaquero/sounds/153827/]
+        All rights go to original owners. License: Creative Commons
+        
+
+6) Dymanically sped up the aliens by INCR_SPEED_ALIEN:
+        
+        I sped up the aliens within a single wave each time an alien was killed,
+        in addition to the speed increase each level up brings.
+        
+        I did this by making an attribute _aliensGone in wave (total number of
+        aliens hit), and multiplying ALIEN_SPEED with _aliensGone**INCR_SPEED_ALIEN
+        in addition to the Levels multiplier (described in #2).
+        
+        If no aliens were hit and the player is on level 1, the speed is ALIEN_SPEED.
